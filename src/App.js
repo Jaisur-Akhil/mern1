@@ -9,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/user' exact element={<User />} />
+        <Route path='/' exact element={<User />} />
       </Routes>
       <Routes>
         <Route path='/client' element={<Client />} exact />
