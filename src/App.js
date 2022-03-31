@@ -5,9 +5,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import User from './user/pages/User';
 import Client from './user/pages/Client';
 import NewPlace from './places/pages/NewPlace';
+import MainNavigation from './shared/Navigation/MainNavigation';
 function App() {
   return (
     <BrowserRouter>
+      <MainNavigation />
       <Routes>
         <Route path='/' exact element={<User />} />
       </Routes>

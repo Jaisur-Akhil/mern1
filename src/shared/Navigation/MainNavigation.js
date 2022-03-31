@@ -11,7 +11,6 @@ const MainNavigation = (props) => {
         <span />
         <span />
         <span />
-        <span />
       </button>
       <h1 className='main-navigation_title'>
         <Link to='/'>YourPlaces</Link>
