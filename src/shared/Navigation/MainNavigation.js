@@ -4,6 +4,7 @@ import React from 'react';
 import './MainNavigation.css';
 import MainHeader from './MainHeader';
 import { Link } from 'react-router-dom';
+import NavLinks from './NavLinks';
 const MainNavigation = (props) => {
   return (
     <MainHeader>
@@ -15,7 +16,9 @@ const MainNavigation = (props) => {
       <h1 className='main-navigation_title'>
         <Link to='/'>YourPlaces</Link>
       </h1>
-      <nav>...</nav>
+      <nav className='main-navigation_header-nav'>
+        <NavLinks />
+      </nav>
     </MainHeader>
   );
 };
