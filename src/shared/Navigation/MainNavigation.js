@@ -10,20 +10,20 @@ const MainNavigation = (props) => {
   return (
     <React.Fragment>
       <SideDrawer>
-        <nav className='main-navigation_drawer-nav'>
+        <nav className='main-navigation__drawer-nav'>
           <NavLinks />
         </nav>
       </SideDrawer>
       <MainHeader>
-        <button className='main-navigation_menu-btn'>
+        <button className='main-navigation__menu-btn'>
           <span />
           <span />
           <span />
         </button>
-        <h1 className='main-navigation_title'>
+        <h1 className='main-navigation__title'>
           <Link to='/'>YourPlaces</Link>
         </h1>
-        <nav className='main-navigation_header-nav'>
+        <nav className='main-navigation__header-nav'>
           <NavLinks />
         </nav>
       </MainHeader>
