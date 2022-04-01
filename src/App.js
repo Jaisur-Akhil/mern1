@@ -11,7 +11,7 @@ function App() {
     <BrowserRouter>
       <MainNavigation />
       <Routes>
-        <Route path='/' exact element={<User />} />
+        <Route path='/' element={<User />} />
       </Routes>
       <Routes>
         <Route path='/client' element={<Client />} exact />

@@ -5,6 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #4d4d4d;
+}
+
+.slide-in-left-enter{
+  transform: translateX(-100);
+}
+
+.slide-in-left-enter-active{
+  transform: translateX(0);
+  opacity: 1;
+  transform: all 200ms;
+}
+
+.slide-in-left-exit{
+  transform: translateX(0%);
+  opacity: 1;
 }
 
 code {
