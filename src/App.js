@@ -6,15 +6,19 @@ import User from './user/pages/User';
 import Client from './user/pages/Client';
 import NewPlace from './places/pages/NewPlace';
 import MainNavigation from './shared/Navigation/MainNavigation';
+import UserPlaces from './places/pages/UserPlaces';
 function App() {
   return (
     <BrowserRouter>
       <MainNavigation />
       <Routes>
-        <Route path='/' element={<User />} />
+        <Route path='/' element={<User />} exact />
       </Routes>
       <Routes>
         <Route path='/client' element={<Client />} exact />
+      </Routes>
+      <Routes>
+        <Route path='/:userId/places' element={<UserPlaces />} exact />
       </Routes>
       <Routes>
         <Route path='/places/new' element={<NewPlace />} exact />

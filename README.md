@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +70,19 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+I can do it .
+i am not perfect and i know it . I know i can do it.
+
+I am optimistic
+i am calm and fast .
+
+I love my self.
+I am confident of my choices and that can be better day by day.
+
+good habits are getting improved and bad habits are going away.
+
+Preparations for job is going good.
+
+and brain is in control.
+I am handling lazyness and able to still continue
