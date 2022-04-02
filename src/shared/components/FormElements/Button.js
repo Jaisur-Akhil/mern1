@@ -35,7 +35,7 @@ const Button = (props) => {
         props.inverse && 'button--inverse'
       } ${props.danger && 'button--danger'}`}
       type={props.type}
-      onClick={props.onCLick}
+      onClick={props.onClick}
       disabled={props.disabled}>
       {props.children}
     </button>
