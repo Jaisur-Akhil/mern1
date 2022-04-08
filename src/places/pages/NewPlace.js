@@ -7,8 +7,13 @@ const NewPlace = () => {
   return (
     <React.Fragment>
       <form className='place-form'>
-        <div>Hello World</div>
-        <Input element='input' type='text' label='Title' />
+        <Input
+          element='input'
+          type='text'
+          label='Title'
+          validators={[]}
+          errorText='Please Enter a Valid Title'
+        />
       </form>
     </React.Fragment>
   );
