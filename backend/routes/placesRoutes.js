@@ -1,6 +1,7 @@
 /** @format */
 
 const express = require('express');
+const { check } = require('express-validator');
 const router = express.Router();
 const placeController = require('../controllers/placeController');
 
@@ -10,9 +11,25 @@ router.get('/:pid', placeController.getPlaceById);
 router.get('/user/:uid', placeController.getUsersById);
 //http://localhost:2000/api/places/user/Akhil
 
-router.post('/', placeController.createPlace);
+router.post(
+  '/',
+  [
+    check('title').not().isEmpty(),
+    check('description').isLength({ min: 3 }),
+    check('address').not().isEmpty(),
+  ],
+  placeController.createPlace
+);
 
-router.patch('/:pid', placeController.updatePlace);
+router.patch(
+  '/:pid',
+  [
+    check('title').not().isEmpty(),
+    check('description').isLength({ min: 3 }),
+    check('address').not().isEmpty(),
+  ],
+  placeController.updatePlace
+);
 
 router.delete('/:pid', placeController.deletePlace);
 

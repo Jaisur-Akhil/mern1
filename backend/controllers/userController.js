@@ -1,6 +1,7 @@
 /** @format */
 
 const { v4: uuidv4 } = require('uuid');
+const { validationResult } = require('express-validator');
 const HttpError = require('../models/err');
 let DUMMY = [
   {
@@ -16,6 +17,11 @@ const getusers = (req, res, next) => {
   res.json({ users: DUMMY });
 };
 const signup = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    throw new HttpError('Validation Error/ Invalid Input', 422);
+  }
   const { name, email, password } = req.body;
   const Exist = DUMMY.find((u) => u.email === email);
   if (Exist) {
