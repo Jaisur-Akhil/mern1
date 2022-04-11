@@ -1,7 +1,8 @@
 /** @format */
 // const uuid = require('uuidv4');
-const { v4: uuidv4, validate } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
+const getCordsForAddress = require('../util/location');
 const HttpError = require('../models/err');
 let DUMMY = [
   {
@@ -57,13 +58,21 @@ const getUsersById = (req, res, next) => {
   res.json({ places });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    throw new HttpError('Validation Error/ Invalid Input', 422);
+    next(new HttpError('Validation Error/ Invalid Input', 422));
   }
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
+  let coordinates;
+  try {
+    coordinates = await getCordsForAddress(address);
+    console.log(coordinates);
+  } catch (error) {
+    next(error);
+  }
+
   const createPlace = {
     id: uuidv4(),
     title,
