@@ -3,7 +3,7 @@
 const { v4: uuidv4 } = require('uuid');
 
 const HttpError = require('../models/err');
-const DUMMY = [
+let DUMMY = [
   {
     id: 'p1',
     title: 'Mumbai',
@@ -71,6 +71,30 @@ const createPlace = (req, res, next) => {
   res.status(201).json({ place: createPlace });
 };
 
+const updatePlace = (req, res, next) => {
+  const { title, description, coordinates, address, creator } = req.body;
+  const placeId = req.params.pid;
+
+  const updatePlace = { ...DUMMY.find((p) => p.id === placeId) };
+  const placeIndex = DUMMY.findIndex((p) => p.id === placeId);
+  updatePlace.title = title;
+  updatePlace.description = description;
+  updatePlace.coordinates = coordinates;
+  updatePlace.address = address;
+  updatePlace.creator = creator;
+
+  DUMMY[placeIndex] = updatePlace;
+
+  res.status(200).json({ place: updatePlace });
+};
+const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
+  DUMMY = DUMMY.filter((p) => p.id !== placeId);
+  res.status(200).json({ message: 'Deleted Place - ', placeId });
+};
+
 exports.getPlaceById = getPlaceById;
 exports.getUserById = getUserById;
 exports.createPlace = createPlace;
+exports.deletePlace = deletePlace;
+exports.updatePlace = updatePlace;
