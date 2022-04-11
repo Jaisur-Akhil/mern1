@@ -10,6 +10,7 @@ router.get('/:pid', placeController.getPlaceById);
 router.get('/user/:uid', placeController.getUserById);
 //http://localhost:2000/api/places/user/Akhil
 
+router.post('/' , placeController.createPlace )
 module.exports = router;
 
 // if (!place) {
