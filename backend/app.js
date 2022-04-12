@@ -24,3 +24,7 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(2000);
+//db user id pass  akhil
+//cluster name  = Refresher
+//RefresherMongo
+//cluseter means database - create databse

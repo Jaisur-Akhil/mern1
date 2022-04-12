@@ -11,10 +11,12 @@ const getCordsForAddress = async (address) => {
     )}&key=${API_KEY}`
   );
   const data = response.data;
+  console.log(data);
   if (!data || data.status === 'ZERO_RESULTS') {
     const error = new HttpError('could not find location', 422);
     throw error;
-  } //   return { lat: 40.7484474, lng: -73.9871516 };
+  }
+  //return { lat: 40.7484474, lng: -73.9871516 };
   const coordinates = data.results[0].geometry.location;
   return coordinates;
 };

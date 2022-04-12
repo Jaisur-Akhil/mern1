@@ -62,7 +62,7 @@ const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    next(new HttpError('Validation Error/ Invalid Input', 422));
+    return next(new HttpError('Validation Error/ Invalid Input', 422));
   }
   const { title, description, address, creator } = req.body;
   let coordinates;
@@ -70,7 +70,7 @@ const createPlace = async (req, res, next) => {
     coordinates = await getCordsForAddress(address);
     console.log(coordinates);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 
   const createPlace = {
