@@ -46,7 +46,6 @@ const getPlaceById = async (req, res, next) => {
   }
   res.json({ place: place.toObject({ getters: true }) }); // json to object , getter to remove _id to id
 };
-
 const getUsersById = async (req, res, next) => {
   const userId = req.params.uid;
   let places;
@@ -69,7 +68,6 @@ const getUsersById = async (req, res, next) => {
     places: places.map((place) => place.toObject({ getters: true })),
   });
 };
-
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -104,8 +102,7 @@ const createPlace = async (req, res, next) => {
   // DUMMY.push(createPlace);
   res.status(201).json({ mern: createPlace });
 };
-
-const updatePlace = (req, res, next) => {
+const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -114,17 +111,36 @@ const updatePlace = (req, res, next) => {
   const { title, description, coordinates, address, creator } = req.body;
   const placeId = req.params.pid;
 
-  const updatePlace = { ...DUMMY.find((p) => p.id === placeId) };
-  const placeIndex = DUMMY.findIndex((p) => p.id === placeId);
-  updatePlace.title = title;
-  updatePlace.description = description;
-  updatePlace.coordinates = coordinates;
-  updatePlace.address = address;
-  updatePlace.creator = creator;
+  let place;
+  try {
+    place = await mern.findById(placeId)
+  } catch (err) {
+    const error = new HttpError('Update error', 500)
+    return next(error)
+  }
 
-  DUMMY[placeIndex] = updatePlace;
+  place.title = title;
+  place.description = description
+  place.address = address
+  place.creator = creator
 
-  res.status(200).json({ place: updatePlace });
+  try {
+    await place.save
+  } catch (err) {
+    const error = new HttpError('Update error saving issue', 500)
+    return next(error)
+    
+  }
+  // const placeIndex = DUMMY.findIndex((p) => p.id === placeId);
+  // updatePlace.title = title;
+  // updatePlace.description = description;
+  // updatePlace.coordinates = coordinates;
+  // updatePlace.address = address;
+  // updatePlace.creator = creator;
+
+  // DUMMY[placeIndex] = updatePlace;
+
+  res.status(200).json({ place: place.toObject({getters : true}) });
 };
 const deletePlace = (req, res, next) => {
   const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
