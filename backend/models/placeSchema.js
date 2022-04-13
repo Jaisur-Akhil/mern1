@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const placeSchema = new Schema({
   title: { type: String, require: true['Please insert title'] },
-  descrption: { type: String, required: true['please insert Desc'] },
+  description: { type: String, required: true['please insert Desc'] },
   image: { type: String, required: true['Please insert image'] },
   address: { type: String, required: true['Please insert address'] },
   location: {
@@ -15,5 +15,5 @@ const placeSchema = new Schema({
   creator: { type: String, required: true['please insert creator'] },
 });
 
-module.exports = mongoose.model('Place', placeSchema);
+module.exports = mongoose.model('mern', placeSchema);
 //name of module , schema

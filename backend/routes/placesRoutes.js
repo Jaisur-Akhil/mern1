@@ -9,6 +9,7 @@ router.get('/:pid', placeController.getPlaceById);
 // http://localhost:2000/api/places/p1
 
 router.get('/user/:uid', placeController.getUsersById);
+
 //http://localhost:2000/api/places/user/Akhil
 
 router.post(

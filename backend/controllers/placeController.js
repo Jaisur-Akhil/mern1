@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
 const getCordsForAddress = require('../util/location');
 const HttpError = require('../models/err');
+const mern = require('../models/placeSchema');
 let DUMMY = [
   {
     id: 'p1',
@@ -27,35 +28,46 @@ let DUMMY = [
   },
 ];
 
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   console.log('Get Request - Application/json');
   const placeId = req.params.pid;
-  const place = DUMMY.find((p) => {
-    return p.id === placeId;
-  });
-  if (!place) {
-    throw (error = new HttpError(
-      'Could not find a place for provided id',
-      404
-    ));
+  let place;
+
+  try {
+    place = await mern.findById(placeId);
+  } catch (err) {
+    const error = new HttpError('findById issue', 500);
+    return next(error);
   }
-  res.json({ place });
+
+  if (!place) {
+    const error = new HttpError('Could not find a place for provided id', 404);
+    return next(error);
+  }
+  res.json({ place: place.toObject({ getters: true }) }); // json to object , getter to remove _id to id
 };
 
-const getUsersById = (req, res, next) => {
+const getUsersById = async (req, res, next) => {
   const userId = req.params.uid;
-  console.log(userId);
-  const places = DUMMY.filter((u) => {
-    console.log(u.creator);
-    return u.creator === userId;
-  });
+  let places;
+
+  try {
+    places = await mern.find({ creator: userId });
+  } catch (err) {
+    const error = new HttpError(
+      'Fetching places failed, please try again later',
+      500
+    );
+    return next(error);
+  }
   if (!places || places.length === 0) {
     return next(
-      new HttpError('Could not find a users places for provided user id', 404)
+      new HttpError('Could not find places for the provided user id.', 404)
     );
   }
-
-  res.json({ places });
+  res.json({
+    places: places.map((place) => place.toObject({ getters: true })),
+  });
 };
 
 const createPlace = async (req, res, next) => {
@@ -73,16 +85,24 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createPlace = {
-    id: uuidv4(),
+  const createPlace = new mern({
     title,
     description,
-    location: coordinates,
     address,
+    location: coordinates,
+    image:
+      'https://images.unsplash.com/photo-1571566882372-1598d88abd90?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTd8fHlvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
     creator,
-  };
-  DUMMY.push(createPlace);
-  res.status(201).json({ place: createPlace });
+  });
+  try {
+    await createPlace.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError('Creating place failed ', 500);
+    return next(error);
+  }
+  // DUMMY.push(createPlace);
+  res.status(201).json({ mern: createPlace });
 };
 
 const updatePlace = (req, res, next) => {
@@ -120,3 +140,21 @@ exports.getUsersById = getUsersById;
 exports.createPlace = createPlace;
 exports.deletePlace = deletePlace;
 exports.updatePlace = updatePlace;
+
+/*
+  const createPlace = {
+    id: uuidv4(),
+    title,
+    description,
+    location: coordinates,
+    address,
+    creator,
+  };
+  DUMMY.push(createPlace);
+  res.status(201).json({ place: createPlace });
+
+   // places = DUMMY.filter((u) => {
+    //   console.log(u.creator);
+    //   return u.creator === userId;
+    // });
+*/
