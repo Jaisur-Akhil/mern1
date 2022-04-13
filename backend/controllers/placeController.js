@@ -106,30 +106,29 @@ const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    throw new HttpError('Validation Error/ Invalid Input', 422);
+    return next(new HttpError('Validation Error/ Invalid Input', 422));
   }
   const { title, description, coordinates, address, creator } = req.body;
   const placeId = req.params.pid;
 
   let place;
   try {
-    place = await mern.findById(placeId)
+    place = await mern.findById(placeId);
   } catch (err) {
-    const error = new HttpError('Update error', 500)
-    return next(error)
+    const error = new HttpError('Update error', 500);
+    return next(error);
   }
 
   place.title = title;
-  place.description = description
-  place.address = address
-  place.creator = creator
+  place.description = description;
+  place.address = address;
+  place.creator = creator;
 
   try {
-    await place.save
+    await place.save;
   } catch (err) {
-    const error = new HttpError('Update error saving issue', 500)
-    return next(error)
-    
+    const error = new HttpError('Update error saving issue', 500);
+    return next(error);
   }
   // const placeIndex = DUMMY.findIndex((p) => p.id === placeId);
   // updatePlace.title = title;
@@ -140,15 +139,26 @@ const updatePlace = async (req, res, next) => {
 
   // DUMMY[placeIndex] = updatePlace;
 
-  res.status(200).json({ place: place.toObject({getters : true}) });
+  res.status(200).json({ place: place.toObject({ getters: true }) });
 };
-const deletePlace = (req, res, next) => {
+const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
-  if (!DUMMY.find((p) => p.id === placeId)) {
-    throw new HttpError('could not find a place to delete for Id', 404);
+
+  let place;
+  try {
+    place = mern.findById(placeId);
+  } catch (err) {
+    const error = new HttpError('no Id found to delete');
+    return error;
   }
-  DUMMY = DUMMY.filter((p) => p.id !== placeId);
-  res.status(200).json({ message: 'Deleted Place - ', placeId });
+
+  try {
+    await place.remove();
+  } catch (err) {
+    const error = new HttpError('no Id found to delete');
+    return next(error);
+  }
+  res.status(200).json({ message: 'Deleted following id  ', placeId });
 };
 
 exports.getPlaceById = getPlaceById;
