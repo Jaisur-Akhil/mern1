@@ -2,7 +2,7 @@
 
 import React, { useReducer, useEffect } from 'react';
 import './Input.css';
-import { validate } from '../UI Elements/util/validators';
+import { validate } from '../util/validators';
 const inputReducer = (state, action) => {
   switch (action.type) {
     case 'Change':
@@ -23,8 +23,8 @@ const inputReducer = (state, action) => {
 
 const Input = (props) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: '',
-    isValid: false,
+    value: props.value || '',
+    isValid: props.valid || false,
     isTouched: false,
   });
   const { id, onInput } = props;

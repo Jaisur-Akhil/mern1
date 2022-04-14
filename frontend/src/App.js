@@ -7,6 +7,7 @@ import Client from './user/pages/Client';
 import NewPlace from './places/pages/NewPlace';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
 import UserPlaces from './places/pages/UserPlaces';
+import UpdatePlaces from './places/pages/UpdatePlaces'
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,9 @@ function App() {
       </Routes>
       <Routes>
         <Route path='/places/new' element={<NewPlace />} exact />
+      </Routes>
+      <Routes>
+        <Route path='/places/:placeId' element={<UpdatePlaces />} exact />
       </Routes>
     </BrowserRouter>
   );

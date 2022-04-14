@@ -2,11 +2,11 @@
 
 import React, { useCallback, useReducer } from 'react';
 import Input from './../../shared/components/FormElements/Input';
-import './NewPlace.css';
+import './PlaceForm.css';
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
-} from '../../shared/components/UI Elements/util/validators';
+} from '../../shared/components/util/validators';
 
 import Button from '../../shared/components/FormElements/Button';
 
@@ -40,6 +40,7 @@ const NewPlace = () => {
     inputs: {
       title: { value: '', isValid: false },
       description: { value: '', isValid: false },
+      address: { value: '', isValid: false },
     },
     isValid: false,
   });
@@ -76,7 +77,7 @@ const NewPlace = () => {
           errorText='Please Enter a Valid desc '
           onInput={InputHandler}
         />
-<Input
+        <Input
           id='address'
           element='input'
           label='Address'
