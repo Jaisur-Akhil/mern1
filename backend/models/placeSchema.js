@@ -12,7 +12,11 @@ const placeSchema = new Schema({
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
   },
-  creator: { type: String, required: true['please insert creator'] },
+  creator: {
+    type: mongoose.Types.ObjectId,
+    required: true['please insert creator'],
+    ref: 'Suser',
+  },
 });
 
 module.exports = mongoose.model('mern', placeSchema);

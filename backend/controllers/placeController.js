@@ -5,28 +5,10 @@ const { validationResult } = require('express-validator');
 const getCordsForAddress = require('../util/location');
 const HttpError = require('../models/err');
 const mern = require('../models/placeSchema');
-let DUMMY = [
-  {
-    id: 'p1',
-    title: 'Mumbai',
-    description: 'marine drive bicycling mediation coding',
-    location: {
-      lng: 18.945634,
-      lat: 72.821329,
-    },
-    creator: 'Akhil',
-  },
-  {
-    id: 'p2',
-    title: 'Mumbai',
-    description: 'Juhu Friends evening trains coding ',
-    location: {
-      lng: 19.095464,
-      lat: 72.825985,
-    },
-    creator: 'Arusha',
-  },
-];
+const Suser = require('../models/userSchema');
+const mongooseUniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('mongoose');
+//const { default: mongoose } = require('mongoose');
 
 const getPlaceById = async (req, res, next) => {
   console.log('Get Request - Application/json');
@@ -71,18 +53,18 @@ const getUsersById = async (req, res, next) => {
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors);
+    //console.log(errors);
     return next(new HttpError('Validation Error/ Invalid Input', 422));
   }
   const { title, description, address, creator } = req.body;
   let coordinates;
   try {
     coordinates = await getCordsForAddress(address);
-    console.log(coordinates);
+    //console.log(coordinates);
   } catch (error) {
-    return next(error);
+    // console.log(errors);
+    return next(new HttpError('Validation Error/ Invalid Input', 422));
   }
-
   const createPlace = new mern({
     title,
     description,
@@ -92,73 +74,97 @@ const createPlace = async (req, res, next) => {
       'https://images.unsplash.com/photo-1571566882372-1598d88abd90?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTd8fHlvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
     creator,
   });
+  let user;
   try {
-    await createPlace.save();
+    user = await Suser.findById(creator);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
+    return next(new HttpError('Validation Error/ Invalid Input', 422));
+  }
+
+  try {
+    // await createPlace.save();
+    //transaction - mutilple process. if any fails revert every`thing
+    const sessn = await mongoose.startSession();
+    sessn.startTransaction();
+    await createPlace.save({ session: sessn });
+    user.places.push(createPlace);
+    await user.save({ session: sessn });
+    await sessn.commitTransaction();
+  } catch (err) {
+    //console.log(err);
     const error = new HttpError('Creating place failed ', 500);
     return next(error);
   }
-  // DUMMY.push(createPlace);
-  res.status(201).json({ mern: createPlace });
+  res.status(201).json({ place: createPlace });
 };
-const updatePlace = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    return next(new HttpError('Validation Error/ Invalid Input', 422));
-  }
-  const { title, description, coordinates, address, creator } = req.body;
-  const placeId = req.params.pid;
 
-  let place;
-  try {
-    place = await mern.findById(placeId);
-  } catch (err) {
-    const error = new HttpError('Update error', 500);
-    return next(error);
-  }
-
-  place.title = title;
-  place.description = description;
-  place.address = address;
-  place.creator = creator;
-
-  try {
-    await place.save;
-  } catch (err) {
-    const error = new HttpError('Update error saving issue', 500);
-    return next(error);
-  }
-  // const placeIndex = DUMMY.findIndex((p) => p.id === placeId);
-  // updatePlace.title = title;
-  // updatePlace.description = description;
-  // updatePlace.coordinates = coordinates;
-  // updatePlace.address = address;
-  // updatePlace.creator = creator;
-
-  // DUMMY[placeIndex] = updatePlace;
-
-  res.status(200).json({ place: place.toObject({ getters: true }) });
-};
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
 
   let place;
   try {
-    place = mern.findById(placeId);
+    place = mern.findById(placeId).populate('creator'); //if ref is tehre o both the relation
   } catch (err) {
     const error = new HttpError('no Id found to delete');
     return error;
   }
+  if (!place) {
+    const error = new HttpError('No id', 404);
+    return error;
+  }
+  try {
+    // const sessn = await mongoose.startSession();
+    // sessn.startTransaction();
+    // await place.remove({ session: sessn });
+    // place.creator.places.pull(place);
+    // await place.creator.save({ session: sessn });
+    // await sessn.commitTransaction();
+
+    const sessn = await mongoose.startSession();
+    sessn.startTransaction();
+    await place.remove({ session: sessn });
+    place.creator.places.pull(place);
+    await place.creator.save({ session: sessn });
+    await sessn.commitTransaction();
+  } catch (err) {
+    const error = new HttpError('no Id found to delete');
+    console.log(err);
+    console.log(error);
+    return next(error);
+  }
+  res.status(200).json({ message: 'Deleted following id  ', placeId });
+};
+
+const updatePlace = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Invalid inputs passed, please check your data', 422)
+    );
+  }
+  const { title, description } = req.body;
+  const placeId = req.params.pid;
+  let place;
+
+  //   let place;
+  try {
+    place = await mern.findById(placeId);
+  } catch (err) {
+    const error = new HttpError('Update error', 500);
+    return error;
+  }
+  place.title = title;
+  place.description = description;
 
   try {
-    await place.remove();
+    await place.save();
   } catch (err) {
     const error = new HttpError('no Id found to delete');
     return next(error);
   }
-  res.status(200).json({ message: 'Deleted following id  ', placeId });
+
+  res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
 exports.getPlaceById = getPlaceById;
