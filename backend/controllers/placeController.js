@@ -99,43 +99,81 @@ const createPlace = async (req, res, next) => {
   res.status(201).json({ place: createPlace });
 };
 
+// const deletePlace = async (req, res, next) => {
+//   const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
+
+//   let place;
+//   try {
+//     place = mern.findById(placeId).populate('creator'); //if ref is tehre o both the relation
+//   } catch (err) {
+//     const error = new HttpError('no Id found to delete');
+//     return error;
+//   }
+//   if (!place) {
+//     const error = new HttpError('No id', 404);
+//     return error;
+//   }
+//   try {
+//     // const sessn = await mongoose.startSession();
+//     // sessn.startTransaction();
+//     // await place.remove({ session: sessn });
+//     // place.creator.places.pull(place);
+//     // await place.creator.save({ session: sessn });
+//     // await sessn.commitTransaction();
+
+//     const sessn = await mongoose.startSession();
+//     sessn.startTransaction();
+//     await place.remove({ session: sessn });
+//     place.creator.places.pull(place);
+//     await place.creator.save({ session: sessn });
+//     await sessn.commitTransaction();
+//   } catch (err) {
+//     const error = new HttpError('no Id found to delete');
+//     console.log(err);
+//     console.log(error);
+//     return next(error);
+//   }
+//   res.status(200).json({ message: 'Deleted following id  ', placeId });
+// };
+
 const deletePlace = async (req, res, next) => {
-  const placeId = req.params.pid; // keep the place if id donot match. if id do match . then remove the palce
-
+  const placeId = req.params.pid;
   let place;
-  try {
-    place = mern.findById(placeId).populate('creator'); //if ref is tehre o both the relation
-  } catch (err) {
-    const error = new HttpError('no Id found to delete');
-    return error;
-  }
-  if (!place) {
-    const error = new HttpError('No id', 404);
-    return error;
-  }
-  try {
-    // const sessn = await mongoose.startSession();
-    // sessn.startTransaction();
-    // await place.remove({ session: sessn });
-    // place.creator.places.pull(place);
-    // await place.creator.save({ session: sessn });
-    // await sessn.commitTransaction();
 
-    const sessn = await mongoose.startSession();
-    sessn.startTransaction();
-    await place.remove({ session: sessn });
-    place.creator.places.pull(place);
-    await place.creator.save({ session: sessn });
-    await sessn.commitTransaction();
+  try {
+    place = await mern.findById(placeId).populate('creator');
   } catch (err) {
-    const error = new HttpError('no Id found to delete');
-    console.log(err);
-    console.log(error);
+    const error = new HttpError(
+      'Something went wrong, Could not delete a place',
+      500
+    );
     return next(error);
   }
-  res.status(200).json({ message: 'Deleted following id  ', placeId });
-};
 
+  if (!place) {
+    const error = new HttpError(
+      'Could not find a place for the provided id.',
+      404
+    );
+    return next(error);
+  }
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    await place.remove({ session: session });
+    place.creator.places.pull(place);
+    await place.creator.save({ session: session });
+    await session.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, Could not remove a place',
+      500
+    );
+    return next(error);
+  }
+  res.status(200).json({ message: 'Deleted Place' });
+};
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
