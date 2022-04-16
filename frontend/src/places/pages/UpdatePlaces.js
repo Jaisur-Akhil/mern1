@@ -1,98 +1,132 @@
 /** @format */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
-import './PlaceForm.css';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
-} from '../../shared/components/util/validators';
-const DUMMY = [
+} from '../../shared/util/validators';
+import { useForm } from '../../shared/hooks/form-hook';
+import './PlaceForm.css';
+
+const DUMMY_PLACES = [
   {
     id: 'p1',
-    title: 'Kandivali Station',
-    description: 'Multiple Dogs',
+    title: 'Empire State Building',
+    description: 'One of the most famous sky scrapers in the world!',
     imageUrl:
-      'https://images.unsplash.com/photo-1444212477490-ca407925329e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8ZG9nc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
-    address:
-      ' Swami Vivekanand Road, Parekh Nagar, Kandivali West, Mumbai, Maharashtra 400067 ',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    address: '20 W 34th St, New York, NY 10001',
     location: {
-      lat: 19.2096466,
-      lng: 72.7937044,
+      lat: 40.7484405,
+      lng: -73.9878584,
     },
-    creator: 'Akhil',
+    creator: 'u1',
   },
   {
     id: 'p2',
-    title: 'Borivali Station',
-    description: 'Hungry People',
+    title: 'Empire State Building',
+    description: 'One of the most famous sky scrapers in the world!',
     imageUrl:
-      'https://images.unsplash.com/photo-1588495297064-a85ab4badf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aHVuZ3J5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    address: ' Sundar Nagar, Borivali West, Mumbai, Maharashtra 400092 ',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    address: '20 W 34th St, New York, NY 10001',
     location: {
-      lat: 19.2335295,
-      lng: 72.8216415,
+      lat: 40.7484405,
+      lng: -73.9878584,
     },
-    creator: 'Arusha',
-  },
-
-  {
-    id: 'p3',
-    title: 'Dadar Station',
-    description: 'Provide Food',
-    imageUrl:
-      'https://images.unsplash.com/photo-1588495297064-a85ab4badf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aHVuZ3J5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    address: ' Western Railway Station, Dadar, Mumbai, Maharashtra ',
-    location: {
-      lat: 9.0188683,
-      lng: 72.8301672,
-    },
-    creator: 'Shrikant',
+    creator: 'u2',
   },
 ];
 
-const UpdatePlaces = () => {
+const UpdatePlace = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const placeId = useParams().placeId;
-  const findId = DUMMY.find((p) => p.id === placeId);
-  if (!findId) {
+
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      title: {
+        value: '',
+        isValid: false,
+      },
+      description: {
+        value: '',
+        isValid: false,
+      },
+    },
+    false
+  );
+
+  const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
+
+  useEffect(() => {
+    setFormData(
+      {
+        title: {
+          value: identifiedPlace.title,
+          isValid: true,
+        },
+        description: {
+          value: identifiedPlace.description,
+          isValid: true,
+        },
+      },
+      true
+    );
+    setIsLoading(false);
+  }, [setFormData, identifiedPlace]);
+
+  const placeUpdateSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState.inputs);
+  };
+
+  if (!identifiedPlace) {
     return (
       <div className='center'>
-        <h2>Could Not Find a place</h2>
+        <h2>Could not find place!</h2>
       </div>
     );
   }
+
+  if (isLoading) {
+    return (
+      <div className='center'>
+        <h2>Loading...</h2>
+      </div>
+    );
+  }
+
   return (
-    <form className='place-form' style={{ marginTop: '100px' }}>
+    <form className='place-form' onSubmit={placeUpdateSubmitHandler}>
       <Input
         id='title'
         element='input'
         type='text'
         label='Title'
         validators={[VALIDATOR_REQUIRE()]}
-        errorText='Please enter a valid title'
-        onInput={() => {}}
-        value={findId.title}
-        valid={true}
+        errorText='Please enter a valid title.'
+        onInput={inputHandler}
+        initialValue={formState.inputs.title.value}
+        initialValid={formState.inputs.title.isValid}
       />
-
       <Input
         id='description'
         element='textarea'
-        type='text'
         label='Description'
         validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText='Please enter a valid Desc'
-        onInput={() => {}}
-        value={findId.description}
-        valid={true}
+        errorText='Please enter a valid description (min. 5 characters).'
+        onInput={inputHandler}
+        initialValue={formState.inputs.description.value}
+        initialValid={formState.inputs.description.isValid}
       />
-      <Button type='submit' disabled={true}>
-        Update Place
+      <Button type='submit' disabled={!formState.isValid}>
+        UPDATE PLACE
       </Button>
     </form>
   );
 };
 
-export default UpdatePlaces;
+export default UpdatePlace;

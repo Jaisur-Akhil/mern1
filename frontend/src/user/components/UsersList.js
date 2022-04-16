@@ -8,9 +8,11 @@ import Card from '../../shared/components/UI Elements/Card/Card';
 const UsersList = (props) => {
   if (props.items.length === 0) {
     return (
-      <Card style={{ alignItems: 'center' }}>
-        <h2>No Users Found</h2>
-      </Card>
+      <div className='center'>
+        <Card>
+          <h2>No Users Found</h2>
+        </Card>
+      </div>
     );
   }
 

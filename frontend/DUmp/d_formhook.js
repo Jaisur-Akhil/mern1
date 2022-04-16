@@ -4,7 +4,7 @@ import { useCallback, useReducer } from 'react';
 
 const formReducer = (state, action) => {
   switch (action.type) {
-    case 'INPUT_CHANGE':
+    case 'Input_Change':
       let formIsValid = true;
       for (const inputId in state.inputs) {
         if (inputId === action.inputId) {
@@ -21,7 +21,7 @@ const formReducer = (state, action) => {
         },
         isValid: formIsValid,
       };
-    case 'SET_DATA':
+    case 'Set_Data':
       return {
         inputs: action.inputs,
         isValid: action.formIsValid,
@@ -36,10 +36,9 @@ export const useForm = (initialInputs, initialFormValidity) => {
     inputs: initialInputs,
     isValid: initialFormValidity,
   });
-
-  const inputHandler = useCallback((id, value, isValid) => {
+  const InputHandler = useCallback((id, value, isValid) => {
     dispatch({
-      type: 'INPUT_CHANGE',
+      type: 'Input_Change',
       value: value,
       isValid: isValid,
       inputId: id,
@@ -48,11 +47,22 @@ export const useForm = (initialInputs, initialFormValidity) => {
 
   const setFormData = useCallback((inputData, formValidity) => {
     dispatch({
-      type: 'SET_DATA',
+      type: 'Set_Data',
       inputs: inputData,
       formIsValid: formValidity,
     });
   }, []);
 
-  return [formState, inputHandler, setFormData];
+  return [formState, InputHandler, setFormData];
 };
+
+export default useForm;
+/*
+//customer hooks should always start with lower useName ie UseForm
+{
+    title: { value: '', isValid: false },
+    description: { value: '', isValid: false },
+    address: { value: '', isValid: false },
+  }
+  
+  */
