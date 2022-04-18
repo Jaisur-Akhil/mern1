@@ -8,10 +8,11 @@ import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
 } from '../../shared/util/validators';
-import { useForm } from '../../shared/hooks/form-hook';
+import useForm from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 
 const NewPlace = () => {
+  console.log('----------------------------------------');
   const [formState, inputHandler] = useForm(
     {
       title: {

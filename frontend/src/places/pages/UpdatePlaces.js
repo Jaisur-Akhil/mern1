@@ -9,7 +9,7 @@ import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
 } from '../../shared/util/validators';
-import { useForm } from '../../shared/hooks/form-hook';
+import useForm from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 
 const DUMMY_PLACES = [
@@ -60,6 +60,7 @@ const UpdatePlace = () => {
   );
 
   const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
+  console.log(placeId, identifiedPlace);
 
   useEffect(() => {
     setFormData(
