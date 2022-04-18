@@ -1,12 +1,4 @@
-/** @format */
-
-* {
-  align-content: center;
-  align-items: center;
-  align-self: center;
-}
-.user-list {
-  align-items: center;
+.users-list {
   list-style: none;
   margin: 0 auto;
   padding: 0;
@@ -15,5 +7,4 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  align-self: center;
 }

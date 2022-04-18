@@ -1,60 +1,41 @@
-/** @format */
-
 import React from 'react';
-import PlaceList from '../components/PlaceList';
 import { useParams } from 'react-router-dom';
 
-const DUMMY = [
+import PlaceList from '../components/PlaceList';
+
+const DUMMY_PLACES = [
   {
     id: 'p1',
-    title: 'Kandivali Station',
-    description: 'Multiple Dogs',
+    title: 'Empire State Building',
+    description: 'One of the most famous sky scrapers in the world!',
     imageUrl:
-      'https://images.unsplash.com/photo-1444212477490-ca407925329e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8ZG9nc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
-    address:
-      ' Swami Vivekanand Road, Parekh Nagar, Kandivali West, Mumbai, Maharashtra 400067 ',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    address: '20 W 34th St, New York, NY 10001',
     location: {
-      lat: 19.2096466,
-      lng: 72.7937044,
+      lat: 40.7484405,
+      lng: -73.9878584
     },
-    creator: 'Akhil',
+    creator: 'u1'
   },
   {
     id: 'p2',
-    title: 'Borivali Station',
-    description: 'Hungry People',
+    title: 'Emp. State Building',
+    description: 'One of the most famous sky scrapers in the world!',
     imageUrl:
-      'https://images.unsplash.com/photo-1588495297064-a85ab4badf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aHVuZ3J5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    address: ' Sundar Nagar, Borivali West, Mumbai, Maharashtra 400092 ',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    address: '20 W 34th St, New York, NY 10001',
     location: {
-      lat: 19.2335295,
-      lng: 72.8216415,
+      lat: 40.7484405,
+      lng: -73.9878584
     },
-    creator: 'Arusha',
-  },
-
-  {
-    id: 'p3',
-    title: 'Dadar Station',
-    description: 'Provide Food',
-    imageUrl:
-      'https://images.unsplash.com/photo-1588495297064-a85ab4badf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aHVuZ3J5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    address: ' Western Railway Station, Dadar, Mumbai, Maharashtra ',
-    location: {
-      lat: 9.0188683,
-      lng: 72.8301672,
-    },
-    creator: 'Shrikant',
-  },
+    creator: 'u2'
+  }
 ];
 
 const UserPlaces = () => {
   const userId = useParams().userId;
-  const loadedPlaces = DUMMY.filter((place) => place.creator === userId);
+  const loadedPlaces = DUMMY_PLACES.filter(place => place.creator === userId);
   return <PlaceList items={loadedPlaces} />;
 };
 
 export default UserPlaces;
-//fetch and render all places of user.
-//use as a funtions and can gives acces to parameters
-//will return an object

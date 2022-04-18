@@ -1,0 +1,19 @@
+/** @format */
+
+* {
+  align-content: center;
+  align-items: center;
+  align-self: center;
+}
+.user-list {
+  align-items: center;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 90%;
+  max-width: 50rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-self: center;
+}

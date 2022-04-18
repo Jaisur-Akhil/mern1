@@ -1,35 +1,63 @@
 /** @format */
 
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import User from './user/pages/User';
-import Client from './user/pages/Client';
+import React, { useState, useCallback } from 'react';
+
+import { BrowserRouter, Routes, Route ,Navigate} from 'react-router-dom';
+import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
-import MainNavigation from './shared/components/Navigation/MainNavigation';
 import UserPlaces from './places/pages/UserPlaces';
-import UpdatePlaces from './places/pages/UpdatePlaces';
-function App() {
+import UpdatePlace from './places/pages/UpdatePlace';
+import Auth from './user/pages/Auth';
+import MainNavigation from './shared/components/Navigation/MainNavigation';
+import { AuthContext } from './shared/context/auth-context';
+
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const login = useCallback(() => {
+    setIsLoggedIn(true);
+  }, []);
+
+  const logout = useCallback(() => {
+    setIsLoggedIn(false);
+  }, []);
+
+  let routes;
+
+  if (isLoggedIn) {
+    routes = (
+      <React.Fragment>
+        <Route path='/' element={<Users />} />
+        <Route path='/:userId/places' element={<UserPlaces />} />
+        <Route path='/places/new' element={<NewPlace />} />
+        <Route path='/places/:placeId' element={<UpdatePlace />} />
+        <Route path='*' element={<Navigate to='/' replace />} />
+        {/* <Navigate replace to="/" /> */}
+      </React.Fragment>
+    );
+  } else {
+    routes = (
+      <React.Fragment>
+        <Route path='/' element={<Users />} />
+        <Route path='/:userId/places' element={<UserPlaces />} />
+        <Route path='/auth' element={<Auth />} />
+        <Route path='*' element={<Navigate to='/auth' replace />} />
+        {/* <Navigate replace to="/auth" /> */}
+      </React.Fragment>
+    );
+  }
+
   return (
-    <BrowserRouter>
-      <MainNavigation />
-      <Routes>
-        <Route path='/' element={<User />} exact />
-      </Routes>
-      <Routes>
-        <Route path='/client' element={<Client />} />
-      </Routes>
-      <Routes>
-        <Route path='/:userId/places' element={<UserPlaces />} exact />
-      </Routes>
-      <Routes>
-        <Route path='/places/new' element={<NewPlace />} exact />
-      </Routes>
-      <Routes>
-        <Route path='/places/:placeId' element={<UpdatePlaces />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthContext.Provider
+      value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
+      <BrowserRouter>
+        <MainNavigation />
+        <main>
+          <Routes>{routes}</Routes>
+        </main>
+      </BrowserRouter>
+    </AuthContext.Provider>
   );
-}
+};
 
 export default App;
-//Redirect is used for routing, When it has checked all other toutes and still the routes doesnt match . it goes to redirect
